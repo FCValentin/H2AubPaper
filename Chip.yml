@@ -1,0 +1,19 @@
+name: ChIP_SeqPipeline
+channels:
+  - bioconda
+  - conda-forge
+  - ostrokach
+  - defaults
+  - r
+dependencies:
+  - cutadapt=1.18
+  - fastqc=0.11.9
+  - python=3.6
+  - bwa=0.7.17
+  - macs2=2.2.7.1
+  - deeptools=3.5.1
+  - bedtools=2.30.0
+  - samtools=1.12
+  - sambamba=0.8.1
+  - gcc=11.2.0
+  - gawk
