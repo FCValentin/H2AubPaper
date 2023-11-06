@@ -125,3 +125,73 @@ for (i in 1:length(myfiles)) {
   plotAnnoPie(peakAnno)
 }
 dev.off()
+
+###############################################################
+##### R Script PValues : Output a .probabilities file #########
+###############################################################
+
+## PART1 : PValue calculating
+
+## H2A vs NoH2A
+test150_110 = seq(1,length(FragmentLen$V1))
+test70 = seq(1,length(FragmentLen$V1))
+f150_110 <- 0.5*(colSums(FragmentLen[,c(4:7)])[1]/colSums(FragmentLen[,c(4:7)])[4]+colSums(FragmentLen[,c(4:7)])[2]/colSums(FragmentLen[,c(4:7)])[4])
+f70 <- colSums(FragmentLen[,c(4:7)])[3]/colSums(FragmentLen[,c(4:7)])[4] #0.272 #0.4690827
+
+for (i in 1:length(FragmentLen$V1)){
+  if(i%%50000 == 0){
+    print(i)}
+  if(FragmentLen[i,7]>0){
+    test150_110[i] <- prop.test((FragmentLen[i,4]+FragmentLen[i,5]),FragmentLen[i,7],p=f150_110,alternative = "greater")$p.value
+    test70[i] <- prop.test(FragmentLen[i,6],FragmentLen[i,7],p=f70,alternative = "greater")$p.value
+  } else {
+    test150_110[i] <- 1
+    test70[i] <- 1
+  }
+}
+pval = cbind(test150_110, test70)
+write.table(cbind(FragmentLen,((FragmentLen$V4+FragmentLen$V5)/FragmentLen$V7),(FragmentLen$V6/FragmentLen$V7),pval,1),file=paste0(FragmentLenFile,"_H2A_vs_NonH2A.probabilities",sep=""),sep = '\t',quote = F,col.names = F,row.names = F)
+
+## Nucl vs seminucl
+test150 = seq(1,length(FragmentLen$V1))
+test110_70 = seq(1,length(FragmentLen$V1))
+f150 <- colSums(FragmentLen[,c(4:7)])[1]/colSums(FragmentLen[,c(4:7)])[4] #0.272 #0.4690827
+f110_70 <- 0.5*(colSums(FragmentLen[,c(4:7)])[2]/colSums(FragmentLen[,c(4:7)])[4]+colSums(FragmentLen[,c(4:7)])[3]/colSums(FragmentLen[,c(4:7)])[4])
+
+for (i in 1:length(FragmentLen$V1)){
+  if(i%%50000 == 0){ print(i)}
+  if(FragmentLen[i,7]>0){
+    test110_70[i] <- prop.test((FragmentLen[i,5]+FragmentLen[i,6]),FragmentLen[i,7],p=f110_70,alternative = "greater")$p.value
+    test150[i] <- prop.test(FragmentLen[i,4],FragmentLen[i,7],p=f150,alternative = "greater")$p.value
+  }else{
+    test110_70[i] <- 1
+    test150[i] <- 1
+  }}
+pval = cbind(test150, test110_70)
+write.table(cbind(FragmentLen,(FragmentLen$V4/FragmentLen$V7),((FragmentLen$V5+FragmentLen$V6)/FragmentLen$V7),pval,1),file=paste0(FragmentLenFile,"_Nucl_vs_SemiNucl.probabilities",sep=""),sep = '\t',quote = F,col.names = F,row.names = F)
+
+
+#############################################################
+
+##################################
+##### R Script HMM Model #########
+##################################
+
+##PART2 : HMM##
+library("RHmm")
+HMMFile<-"../AlreadyDone/Input.Fragm150_110_70_sum_nodup_above5_slid50.full.bedgraph.probabilities.discrete"
+HMM <- read.table(HMMFile, stringsAsFactors = F, sep = "\t", header = F)
+colnames(HMM)<-c("Chr","Begin","End","Count150","Count110","Count70","TotalCount","%150","%110","%70","p150","p110","p70","obs150","obs110","obs70")
+range<-4000
+test_obs <- HMM
+test_obs[is.na(test_obs)] <- 0
+hmmfit<- HMMFit(test_obs, nStates= 2, dis= 'DISCRETE')
+lim<-seq(1,len(test_obs),by = range)
+lim[len(lim)]<-len(test_obs)+1
+states<-c()
+for(i in 1:(len(lim)-1)){
+  vit<-viterbi(hmmfit, test_obs[lim[i]:(lim[i+1]-1)])
+  states<-c(states,vit$states)
+}
+write.table(states,file="Input.Fragm150_above5_hmm_state_50bpw.full",sep = '\t',quote = F,col.names = F,row.names = F)
+
