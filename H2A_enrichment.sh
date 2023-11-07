@@ -14,7 +14,7 @@ awk '{ if($5>95) print $0"\t"1; else if($5>30 && $5<=95) print $0"\t"2; else if(
 #selection of fragment length based on Fragment size output figure (BamPEFragmentsize)
 awk '{ if($5<=90 && $5>50) print $0"\t"70; else if($5>140 && $5<165) print $0"\t"150; else if($5>100 && $5<=130) print $0"\t"110; else print $0"\t"0}' Merged/Input_Sp_WithoutDupl.sort.bed > Merged/Input_Sp_WithoutDupl_flag.bed
 
-#split the flagged BEDPE file in 2 indipendend bed files depending H2A
+#split the flagged BEDPE file in 2 independant bed files depending H2A
 nohup grep $'\t'1$ Merged/Input_Sp_WithoutDupl_flagNucl.bed | sort -k 1,1 -k2,2n > Merged/Input_Sp_WithoutDupl_Nucl.bed
 nohup grep $'\t'2$ Merged/Input_Sp_WithoutDupl_flagNucl.bed | sort  -k 1,1 -k2,2n > Merged/Input_Sp_WithoutDupl_SubNucl.bed
 nohup grep $'\t'1$ Merged/Input_Sp_WithoutDupl_H2A.bed | sort -k 1,1 -k2,2n > Merged/Input_Sp_WithoutDupl_H2APos.bed
@@ -144,7 +144,7 @@ samtools sort -@ 6 IGV/Input_SubNucleosome.bam -o IGV/Input_SubNucleosome.sort.b
 samtools sort -@ 6 IGV/Input_WithH2A.bam -o IGV/Input_WithH2A.sort.bam
 samtools sort -@ 6 IGV/Input_WithoutH2A.bam -o IGV/Input_WithoutH2A.sort.bam
 
-# Compute H2A and Nucleosome enrichment IGV track 
+#Compute H2A and Nucleosome enrichment IGV track 
 samtools index IGV/Input_Nucleosome.sort.bam
 samtools index IGV/Input_SubNucleosome.sort.bam
 bamCompare --binSize 50 -p 4 -v -of bigwig -b1 IGV/Input_Nucleosome.sort.bam -b2 IGV/Input_SubNucleosome.sort.bam -o IGV/NuclPos_vs_SubNuclNeg_log2ratio.bw
@@ -158,7 +158,7 @@ bamCompare --binSize 50 -p 4 -v -of bigwig -b1 IGV/Input_WithH2A.sort.bam -b2 IG
 ##### DNA Ladder ratio ChIP/Input #########
 ###########################################
 
-#RATIO H2Aub => 10807/484 = 22.33
+#RATIO H2Aub => 10807/484 = 22.33 (from 601_DNA reads data extracted, ChIP/Input 601_DNA reads)
 
 #extract ChIP and Input sperm reads on Xenopus laevis bins
 awk '{print $1"\t"($2+100)"\t"($3-100)}' DNALadder/XLaevis_250bpbin_slid50.bed > DNALadder/XLaevis_50bpbin.bed
