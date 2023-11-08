@@ -2,7 +2,7 @@
 
 __Valentin Francois--Campion, Florian Berger, Mami Oikawa, Maissa Goumeidane, Romain Guibeaux, and Jérôme Jullien__
 
-H3K4me3, H3K27me3 and H2AK119Ub1 have been analyzed during this protocol with ChIP-Sequencing. Transcriptomic of Xenopus laevis embryo development was analysed by RNA-Sequencing
+H3K4me3, H3K27me3 and H2AK119ub1 have been analyzed during this protocol with ChIP-Sequencing. Transcriptomic of Xenopus laevis embryo development was analysed by RNA-Sequencing
 
 ## Getting Started
 
