@@ -11,9 +11,9 @@ This repository reports all scripts used for bio-informatics analysis. Data are 
 ### Prerequisites and genome version
 Genome version and annotation
 
-* Xenopus Laevis 9.2 from Xenbase (https://download.xenbase.org/xenbase/Genomics/JGI/Xenla9.2/)
+* Xenopus Laevis 9.2 from [Xenbase](https://download.xenbase.org/xenbase/Genomics/JGI/Xenla9.2/)
 * 601DNA sequence (100% ubiquitylated semi-synthetic nucleosome) : tagctcaattggtcgtagcaagctctagcaccgcttaaacgcacgtacgcgctgtcccccgcgttttaaccgccaaggggattactccctagtctccagg
-* CpG islands (cpgIslandExt.txt.gz) and repeats elements (rmsk.txt.gz) annotation file from UCSC database (https://hgdownload.soe.ucsc.edu/goldenPath/xenLae2/database/)
+* CpG islands (cpgIslandExt.txt.gz) and repeats elements (rmsk.txt.gz) annotation file from [UCSC database](https://hgdownload.soe.ucsc.edu/goldenPath/xenLae2/database/)
 
 ### Tools used for analysis (conda environment)
 
