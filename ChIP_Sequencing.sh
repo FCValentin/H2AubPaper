@@ -150,7 +150,7 @@ done
 for f in `ls -1 bwa/*_INPUT_Input.XL92.sort.filter.bam | cut -d "/" -f 2 | sed 's/_INPUT_Input.XL92.sort.filter.bam//'`
 	do 
 	mkdir macs2/${f}
-	macs2 callpeak -t bwa/${f}_H3K4me3_ChIP.DM6.sort.filter.bam -c bwa/${f}_INPUT_Input.DM6.sort.filter.bam -f BAMPE --gsize=2.6e9 -n macs2/${f}/${f}.DM6 -B -q 0.01 --nomodel --extsize 147
+	macs2 callpeak -t bwa/${f}_H3K4me3_ChIP.DM6.sort.filter.bam -c bwa/${f}_INPUT_Input.DM6.sort.filter.bam -f BAMPE --gsize=1.2e8 -n macs2/${f}/${f}.DM6 -B -q 0.01 --nomodel --extsize 147
 	macs2 callpeak -t bwa/${f}_H3K4me3_ChIP.XL92.sort.filter.bam -c bwa/${f}_INPUT_Input.XL92.sort.filter.bam -f BAMPE --gsize=2.6e9 -n macs2/${f}/${f}.XL92 -B -q 0.01 --nomodel --extsize 147
 	
 	bamToBed -i bwa/${f}_H2Aub_ChIP.DM6.sort.filter.bam > macs2/${f}_H2Aub_chIP.DM6.sort.filter.bed
