@@ -20,6 +20,8 @@ Genome version and annotation
 * Chip.yml => ChIP-Seq conda environment
 
 * rnaseq_align.yml => RNA-Seq conda environment
+  
+* R libraries used are shown in ProcessingChIPdata.R
 
 ### Scripts used for analysis
 
