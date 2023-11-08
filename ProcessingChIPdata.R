@@ -89,8 +89,6 @@ setwd("C:/Users/ValentinFC/Desktop/Article/IGV")
 ### Process findMotif.pl before
 pdf("DotHeatmapHOMERFilter.pdf",width = 100,height=100)
 
-gene_cluster[which(!row.names(gene_cluster)%in%as.numeric(row.names(gene_cluster)[which(gene_cluster$MinlogP.Value.2 > -5 & gene_cluster$MinlogP.Value.3 > -5 & gene_cluster$MinlogP.Value.4 > -5)])),] -> DataLogPVal5
-
 gene_cluster <- read.tsv("../HomerLogPValueInf5.tsv")
 ggplot(gene_cluster, aes(x=Cluster, y = MOTIF_NAME, size = log10(1-MinlogP.Value), color=as.numeric(Percentage_motif))) + 
   geom_point() +  
