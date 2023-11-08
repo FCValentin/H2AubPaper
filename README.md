@@ -17,23 +17,23 @@ Genome version and annotation
 
 ### Tools used for analysis (conda environment)
 
-* Chip.yml => ChIP-Seq conda environment
+* ChIP-Seq conda environment => [Chip.yml](https://github.com/FCValentin/H2AubPaper/blob/main/Chip.yml)
 
-* rnaseq_align.yml => RNA-Seq conda environment
+* RNA-Seq conda environment => [rnaseq_align.yml](https://github.com/FCValentin/H2AubPaper/blob/main/rnaseq_align.yml)
   
-* R libraries used are shown in ProcessingChIPdata.R
+* R libraries used are shown in [ProcessingChIPdata.R](https://github.com/FCValentin/H2AubPaper/blob/main/ProcessingChIPdata.R)
 
 ### Scripts used for analysis
 
-* https://gitlab.univ-nantes.fr/E114424Z/rnaseq_align => RNA-Seq alignment snakemake
+* RNA-Seq alignment [snakemake](https://gitlab.univ-nantes.fr/E114424Z/rnaseq_align)
 
-* https://gitlab.univ-nantes.fr/E114424Z/BulkRNAseq => RNA-Seq R scripts for transcriptomics analysis
+* RNA-Seq R scripts for [gene expression analysis](https://gitlab.univ-nantes.fr/E114424Z/BulkRNAseq)
 
-* ProcessingChIPdata.R => All R scripts for permutation, TF motif heatmap, P-Value of particles enrichment and genomic caracterisation
+* All R scripts for permutation, TF motif heatmap, P-Value of particles enrichment and genomic caracterisation => [ProcessingChIPdata.R](https://github.com/FCValentin/H2AubPaper/blob/main/ProcessingChIPdata.R) 
 
-* ChIP_Sequencing.sh => All ChIP-Seq command line for data processing
+* All ChIP-Seq command line for data processing => [ChIP_Sequencing.sh](https://github.com/FCValentin/H2AubPaper/blob/main/ChIP_Sequencing.sh)
 
-* H2A_enrichment.sh => Scripts for H2A (particles) enrichment detection
+* Scripts for H2A (particles) enrichment detection => [H2A_enrichment.sh](https://github.com/FCValentin/H2AubPaper/blob/main/H2A_enrichment.sh)
 
 ## Authors
 
