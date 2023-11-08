@@ -1,4 +1,4 @@
-## Sperm derived H2AK119ub1 is required for embryonic development in Xenopus Laevis
+# Sperm derived H2AK119ub1 is required for embryonic development in Xenopus Laevis
 
 __Valentin Francois--Campion, Florian Berger, Mami Oikawa, Maissa Goumeidane, Romain Guibeaux, and Jérôme Jullien__
 
@@ -18,19 +18,14 @@ Genome version and annotation
 ### Tools used for analysis (conda environment)
 
 * ChIP-Seq conda environment => [Chip.yml](https://github.com/FCValentin/H2AubPaper/blob/main/Chip.yml)
-
 * RNA-Seq conda environment => [rnaseq_align.yml](https://github.com/FCValentin/H2AubPaper/blob/main/rnaseq_align.yml)
-  
 * R libraries used are shown in [ProcessingChIPdata.R](https://github.com/FCValentin/H2AubPaper/blob/main/ProcessingChIPdata.R)
 
 ### Scripts used for analysis
 
 * RNA-Seq alignment [snakemake](https://gitlab.univ-nantes.fr/E114424Z/rnaseq_align)
-
 * RNA-Seq R scripts for [gene expression analysis](https://gitlab.univ-nantes.fr/E114424Z/BulkRNAseq)
-
 * All R scripts for permutation, TF motif heatmap, P-Value of particles enrichment and genomic caracterisation => [ProcessingChIPdata.R](https://github.com/FCValentin/H2AubPaper/blob/main/ProcessingChIPdata.R) 
-
 * All ChIP-Seq command line for data processing => [ChIP_Sequencing.sh](https://github.com/FCValentin/H2AubPaper/blob/main/ChIP_Sequencing.sh)
 
 * Scripts for H2A (particles) enrichment detection => [H2A_enrichment.sh](https://github.com/FCValentin/H2AubPaper/blob/main/H2A_enrichment.sh)
