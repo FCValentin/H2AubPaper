@@ -6,7 +6,7 @@ H3K4me3, H3K27me3 and H2AK119Ub1 have been analyzed during this protocol with Ch
 
 ## Getting Started
 
-This repository reports all scripts used for bio-informatics analysis. Data are deposited on ENA (GSEXXXXX). 
+This repository reports all scripts used for bio-informatics analysis. Data are deposited on ENA (PRJEB56442). 
 
 ### Prerequisites and genome version
 Genome version and annotation
