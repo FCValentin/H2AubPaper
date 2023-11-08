@@ -9,8 +9,7 @@ H3K4me3, H3K27me3 and H2AK119ub1 have been analyzed during this protocol with Ch
 This repository reports all scripts used for bio-informatics analysis. Data are deposited on ENA (PRJEB56442). 
 
 ### Prerequisites and genome version
-Genome version and annotation
-
+Genome version and annotation :
 * Xenopus laevis 9.2 from [Xenbase](https://download.xenbase.org/xenbase/Genomics/JGI/Xenla9.2/)
 * 601DNA sequence (100% ubiquitylated semi-synthetic nucleosome) : tagctcaattggtcgtagcaagctctagcaccgcttaaacgcacgtacgcgctgtcccccgcgttttaaccgccaaggggattactccctagtctccagg
 * CpG islands (cpgIslandExt.txt.gz) and repeats elements (rmsk.txt.gz) annotation file from [UCSC database](https://hgdownload.soe.ucsc.edu/goldenPath/xenLae2/database/)
