@@ -165,6 +165,10 @@ awk '{print $1"\t"($2+100)"\t"($3-100)}' DNALadder/XLaevis_250bpbin_slid50.bed >
 bedtools intersect -a DNALadder/XLaevis_250bpbin.bed -b DNALadder/Merged_Untreated_Sp_INPUT_Input.XL92.sort.filter.bam -c > DNALadder/cutadapt_Untreated_Sp_INPUT_Input.250bp.bed
 bedtools intersect -a DNALadder/XLaevis_250bpbin.bed -b DNALadder/Merged_Untreated_Sp_H2Aub_ChIP.XL92.sort.filter.bam -c > DNALadder/cutadapt_Untreated_Sp_H2Aub_ChIP.250bp.bed
 
+#Ladder
+computeMatrix reference-point -p 4 --referencePoint center --verbose -S cutadapt_oo-WT_LadderCov.bw cutadapt_Unt_LadderCov.bw cutadapt_oo-U21_LadderCov.bw cutadapt_Untreated_Sp_LadderCov.bw cutadapt_Egg-oo-WT_LadderCov.bw cutadapt_Egg-Unt_LadderCov.bw cutadapt_Egg-oo-U21_LadderCov.bw cutadapt_EggExtract_Sp_LadderCov.bw -R USP21sensitivesTSS.bed MZTSS.bed MaternalOnlyTSS.bed ZygoticTSS.bed OthersTSS.bed GenesTSS.bed --binSize 50 --missingDataAsZero --beforeRegionStartLength 5000 --afterRegionStartLength 5000 --skipZeros -out Droso_USP21Sensitive_LadderH2Aub.mat.gz --outFileNameMatrix Droso_USP21Sensitive_LadderH2Aub.tab --outFileSortedRegions Droso_USP21Sensitive_LadderH2Aub.region.bed
+plotProfile --samplesLabel oo-WTH2Aub oo-UntH2Aub oo-USP21H2Aub oldoo-UntH2Aub egg-WTH2Aub egg-UntH2Aub egg-USP21H2Aub oldegg-UntH2Aub --regionsLabel USP21_DEGenes MZGenes MaternalNonZygoticGenes ZygoticGenes OthersGenes AllGenes -m Droso_USP21Sensitive_LadderH2Aub.mat.gz -out Droso_USP21Sensitive_LadderH2Aub.profile.svg --outFileNameData Droso_USP21Sensitive_LadderH2Aub.tsv
+
 #H2AK119ub1 calibration
 paste DNALadder/cutadapt_Untreated_Sp_H2Aub_ChIP.250bp.bed DNALadder/cutadapt_Untreated_Sp_INPUT_Input.250bp.bed | awk '{if($8>0){print $1"\t"$2"\t"$3"\t"$4"\t"$8"\t"($4/($8))"\t"($4/($8))*(48400/10807);}if($8=0){print $1"\t"$2"\t"$3"\t"$4"\t"$8"\t""0"}}' > DNALadder.bed
 awk '{print $1"\t"$2"\t"$3"\t"$7}' DNALadder.bed  > DNALadder.bg
