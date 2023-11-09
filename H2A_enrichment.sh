@@ -162,8 +162,16 @@ bamCompare --binSize 50 -p 4 -v -of bigwig -b1 IGV/Input_WithH2A.sort.bam -b2 IG
 
 #extract ChIP and Input sperm reads on Xenopus laevis bins
 awk '{print $1"\t"($2+100)"\t"($3-100)}' DNALadder/XLaevis_250bpbin_slid50.bed > DNALadder/XLaevis_50bpbin.bed
-bedtools intersect -a DNALadder/XLaevis_250bpbin.bed -b DNALadder/Merged_Untreated_Sp_INPUT_Input.XL92.sort.filter.bam -c > DNALadder/cutadapt_Untreated_Sp_INPUT_Input.250bp.bed
-bedtools intersect -a DNALadder/XLaevis_250bpbin.bed -b DNALadder/Merged_Untreated_Sp_H2Aub_ChIP.XL92.sort.filter.bam -c > DNALadder/cutadapt_Untreated_Sp_H2Aub_ChIP.250bp.bed
+
+#For each sample file, compute Ladder normalized signal from ChIP. Be careful to edit RATIO H2Aub correction, at 48400/10807 in that case
+for f in `ls -1 DNALadder/*_INPUT_Input.XL92.sort.filter.bam | cut -d "/" -f 2 | sed 's/_INPUT_Input.XL92.sort.filter.bam//'`
+	do
+	bedtools intersect -a DNALadder/XLaevis_250bpbin.bed -b DNALadder/${f}_INPUT_Input.XL92.sort.filter.bam -c > DNALadder/${f}_INPUT_Input.GenomeCov.bed
+	bedtools intersect -a DNALadder/XLaevis_250bpbin.bed -b DNALadder/${f}_H2Aub_ChIP.XL92.sort.filter.bam -c > DNALadder/${f}_H2Aub_ChIP.GenomeCov.bed
+	paste DNALadder/${f}_H2Aub_ChIP.GenomeCov.bed DNALadder/${f}_INPUT_Input.GenomeCov.bed | awk '{if($8>0){print $1"\t"$2"\t"$3"\t"$4"\t"($8)*(2)"\t"($4/(($8)*(2)))"\t"($4/(($8)*(2)))*(48400/10807);}if($8=0){print $1"\t"$2"\t"$3"\t"$4"\t"$8"\t""0"}}' > DNALadder/${f}_LadderCov.bed
+	awk '{print $1"\t"$2"\t"$3"\t"$7}' DNALadder/${f}_LadderCov.bed > DNALadder/${f}_LadderCov.bg
+	./bedGraphtoBigWig DNALadder/${f}_LadderCov.bg chromSizesXL9.bed DNALadder/${f}_LadderCov.bw
+done
 
 #Ladder
 computeMatrix reference-point -p 4 --referencePoint center --verbose -S cutadapt_oo-WT_LadderCov.bw cutadapt_Unt_LadderCov.bw cutadapt_oo-U21_LadderCov.bw cutadapt_Untreated_Sp_LadderCov.bw cutadapt_Egg-oo-WT_LadderCov.bw cutadapt_Egg-Unt_LadderCov.bw cutadapt_Egg-oo-U21_LadderCov.bw cutadapt_EggExtract_Sp_LadderCov.bw -R USP21sensitivesTSS.bed MZTSS.bed MaternalOnlyTSS.bed ZygoticTSS.bed OthersTSS.bed GenesTSS.bed --binSize 50 --missingDataAsZero --beforeRegionStartLength 5000 --afterRegionStartLength 5000 --skipZeros -out Droso_USP21Sensitive_LadderH2Aub.mat.gz --outFileNameMatrix Droso_USP21Sensitive_LadderH2Aub.tab --outFileSortedRegions Droso_USP21Sensitive_LadderH2Aub.region.bed
