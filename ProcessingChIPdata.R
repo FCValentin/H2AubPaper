@@ -13,12 +13,12 @@ setwd("C:/Users/ValentinFC/Desktop/Article/IGV")
 ### DATA IMPORTATION ###
 ########################
 
-### Import all TSS, Enhancer and GeneBody ###
+### Import all TSS, Enhancer and GeneBody coordinates ###
 UniverseTSS<-toGRanges("Genes9_2TSS5Kb_chrosomose.bed")
 UniverseGenes<-toGRanges("Genes9_2_chrosomose.bed")
 UniverseEnhancers<-toGRanges("Genes9_2Enhancers_chrosomose.bed")
 
-### Import TSS, Enhancer and GeneBody linked to USP21 sensitive genes ###
+### Import TSS, Enhancer and GeneBody coordinates linked to USP21 sensitive genes ###
 BackgroundTSS<-toGRanges("USP21TSS_chr.bed") 
 BackgroundGenes<-toGRanges("USP21Genes.bed")
 BackgroundEnhancers<-toGRanges("USP21Enhancers.bed") 
@@ -32,14 +32,17 @@ PeakSet<-toGRanges("H2AK119ub1SpermPeaks.bed")
 
 pdf(file = "EnrichmentUSP21ReplicatedU21.pdf",width=10,height=10)
 
+# Overlap of 10000 resampling of TSS from USP21 sensitive genes over all TSS with H2AK119ub1 sperm peaks
 ptTSS<-permTest(A=BackgroundTSS, ntimes=10000,count.once = TRUE, randomize.function=resampleRegions,evaluate.function=numOverlaps, B=PeakSet,allow.overlaps = TRUE, verbose=T,universe = UniverseTSS)
 summary(ptTSS)
 plot(ptTSS)
 
+# Overlap of 10000 resampling of Gene body from USP21 sensitive genes over all TSS with H2AK119ub1 sperm peaks
 ptGenes<-permTest(A=BackgroundGenes, ntimes=10000,count.once = TRUE, randomize.function=resampleRegions,evaluate.function=numOverlaps, B=PeakSet,allow.overlaps = TRUE, verbose=T,universe = UniverseGenes)
 summary(ptGenes)
 plot(ptGenes)
 
+# Overlap of 10000 resampling of Enhancers associated with USP21 sensitive genes over all TSS with H2AK119ub1 sperm peaks
 ptEnhancers<-permTest(A=BackgroundEnhancers, ntimes=10000,count.once = TRUE, randomize.function=resampleRegions,evaluate.function=numOverlaps, B=PeakSet,allow.overlaps = TRUE, verbose=T,universe = UniverseEnhancers)
 summary(ptEnhancers)
 plot(ptEnhancers)
@@ -51,20 +54,22 @@ dev.off()
 ##########################
 
 gen<-toGRanges("~/These/Analyses/GFF/XL9_Chromosomes.bed")
-
 pdf(file = "EnrichmentTestFig_CpG_repeats_CO.pdf",width=10,height=10)
 
 PeakSet<-toGRanges("Egg-U21_only.bed")
 CpG<-toGRanges("cpgIslandExt.bed")
+# 1000 randomization of peaks over the genome computing overlap over CpG islands
 FigCpG<-permTest(A=PeakSet, B=CpG, ntimes=1000, randomize.function=randomizeRegions, evaluate.function=numOverlaps, count.once=TRUE, genome=gen, allow.overlaps = TRUE,verbose=T)
 summary(FigCpG)
 plot(FigCpG)
 
 repeats<-toGRanges("repeats.bed")
+# 1000 randomization of peaks over the genome computing overlap over repeats elements
 Figrepeats<-permTest(A=PeakSet, B=repeats, ntimes=1000, randomize.function=randomizeRegions, evaluate.function=numOverlaps, count.once=TRUE, genome=gen, allow.overlaps = TRUE,verbose=T)
 summary(Figrepeats)
 plot(Figrepeats)
 
+# 1000 randomization of peaks over the genome computing overlap over intergenic regions (same protocol with Exon, Intron, TSS, Genebody...)
 IntergenicRegions<-toGRanges("intergenic.bed") 
 FigIntergenic<-permTest(A=IntergenicRegions, B=PeakSet, ntimes=1000, randomize.function=randomizeRegions, evaluate.function=numOverlaps, count.once=FALSE, genome=gen, allow.overlaps = TRUE,verbose=T)
 summary(FigIntergenic)
@@ -86,7 +91,7 @@ library(viridis)
 library(ggrepel)
 setwd("C:/Users/ValentinFC/Desktop/Article/IGV")
 
-### Process findMotif.pl before
+### Process findMotif.pl and setup file input
 pdf("DotHeatmapHOMERFilter.pdf",width = 100,height=100)
 
 gene_cluster <- read.tsv("../HomerLogPValueInf5.tsv")
@@ -94,7 +99,6 @@ ggplot(gene_cluster, aes(x=Cluster, y = MOTIF_NAME, size = log10(1-MinlogP.Value
   geom_point() +  
   ylab("GeneMotif") + 
   scale_colour_gradientn(colours = c("red","blue","green"),values = c(0,0.1,1), limits=c(0, 100))
-
 
 dev.off()
 
@@ -134,7 +138,7 @@ dev.off()
 test150_110 = seq(1,length(FragmentLen$V1))
 test70 = seq(1,length(FragmentLen$V1))
 f150_110 <- 0.5*(colSums(FragmentLen[,c(4:7)])[1]/colSums(FragmentLen[,c(4:7)])[4]+colSums(FragmentLen[,c(4:7)])[2]/colSums(FragmentLen[,c(4:7)])[4])
-f70 <- colSums(FragmentLen[,c(4:7)])[3]/colSums(FragmentLen[,c(4:7)])[4] #0.272 #0.4690827
+f70 <- colSums(FragmentLen[,c(4:7)])[3]/colSums(FragmentLen[,c(4:7)])[4] 
 
 for (i in 1:length(FragmentLen$V1)){
   if(i%%50000 == 0){
@@ -153,7 +157,7 @@ write.table(cbind(FragmentLen,((FragmentLen$V4+FragmentLen$V5)/FragmentLen$V7),(
 ## Nucl vs seminucl
 test150 = seq(1,length(FragmentLen$V1))
 test110_70 = seq(1,length(FragmentLen$V1))
-f150 <- colSums(FragmentLen[,c(4:7)])[1]/colSums(FragmentLen[,c(4:7)])[4] #0.272 #0.4690827
+f150 <- colSums(FragmentLen[,c(4:7)])[1]/colSums(FragmentLen[,c(4:7)])[4] 
 f110_70 <- 0.5*(colSums(FragmentLen[,c(4:7)])[2]/colSums(FragmentLen[,c(4:7)])[4]+colSums(FragmentLen[,c(4:7)])[3]/colSums(FragmentLen[,c(4:7)])[4])
 
 for (i in 1:length(FragmentLen$V1)){
