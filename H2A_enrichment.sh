@@ -37,8 +37,6 @@ awk '{if($6>=5) print $0}' Fragment/Input.Fragm150-110_vs70_sum_nodup_250bpbin_s
 ############################################################################################
 
 # P-Value discretisation
-
-
 awk '
     {
     if ($6>0) {p1=0;p2=0}
@@ -52,7 +50,6 @@ awk '
     if($6>0 && $10<=0.001){p2=3;}
     print $1"\t"$2"\t"$3"\t"$4"\t"$5"\t"$6"\t"$7"\t"$8"\t"$9"\t"$10"\t"p1"\t"p2}
 ' Fragment/Input.Fragm150-110_vs70_sum_nodup_250bpbin_slid50_above5_H2A_vs_NoH2A.probabilities >  Fragment/Input.Fragm150-110_vs70_sum_nodup_250bpbin_slid50_above5_H2A_vs_NoH2A.probabilities.discrete
-
 
 awk '
     {
@@ -76,6 +73,7 @@ awk '
 ##### R Script HMM Model #########
 ##################################
 
+#Merged bins that overlap between them into a unique one, at different discrete p-value level 
 awk '{if($11>0) print $0}' Fragment/Input.Fragm150-110_vs70_sum_nodup_250bpbin_slid50_above5_H2A_vs_NoH2A.probabilities.discrete | mergeBed > IGV/H2Aenriched_0.1.bed
 awk '{if($12>0) print $0}' Fragment/Input.Fragm150-110_vs70_sum_nodup_250bpbin_slid50_above5_H2A_vs_NoH2A.probabilities.discrete | mergeBed > IGV/H2Adepleted_0.1.bed
 awk '{if($11>0) print $0}' Fragment/Input.Fragm150_vs110-70_sum_nodup_250bpbin_slid50_above5_Nucl_vs_SemiNucl.probabilities.discrete | mergeBed > IGV/NucleosomeEnriched_0.1.bed
@@ -124,7 +122,7 @@ bedtools intersect -f 0.5 -a Merged/Input_Sp_WithoutDupl.bam -b IGV/H2Aenriched_
 #Check fragment size of isolated reads on fragment size (control test)
 for f in `ls -1 FragmentSize/*_MidOverlap.bam  | cut -d "/" -f 2 | sed 's/.bam//'`
 	do 
-	   #bamCoverage -bs 50 -v -p 4 -b FragmentSize/${f}.bam -o IGV/${f}.bw
+	   bamCoverage -bs 50 -v -p 4 -b FragmentSize/${f}.bam -o IGV/${f}.bw
 	   samtools sort -@ 6 FragmentSize/${f}.bam -o FragmentSize/${f}.sort.bam
 	   samtools index FragmentSize/${f}.sort.bam
 	   bamPEFragmentSize -p 8 --plotFileFormat pdf -b FragmentSize/${f}.sort.bam -T "Fragment size of PE RNA-seq datas" --maxFragmentLength 300 -o FragmentSize/${f}_Hist.pdf --table FragmentSize/${f}.tsv --samplesLabel ${f}
@@ -138,7 +136,6 @@ bedtools intersect -a Merged/Input_Sp_WithoutDupl.bam -b Merged/Input_Sp_Without
 bedtools intersect -a Merged/Input_Sp_WithoutDupl.sort.bam -b Merged/Input_Sp_WithoutDupl_SubNucl.sorted.bed > IGV/Input_SubNucleosome.bam
 bedtools intersect -a Merged/Input_Sp_WithoutDupl.sort.bam -b Merged/Input_Sp_WithoutDupl_H2APos.sorted.bed > IGV/Input_WithH2A.bam
 bedtools intersect -a Merged/Input_Sp_WithoutDupl.sort.bam -b Merged/Input_Sp_WithoutDupl_H2ANeg.sorted.bed > IGV/Input_WithoutH2A.bam
-
 samtools sort -@ 6 IGV/Input_Nucleosome.bam -o IGV/Input_Nucleosome.sort.bam
 samtools sort -@ 6 IGV/Input_SubNucleosome.bam -o IGV/Input_SubNucleosome.sort.bam
 samtools sort -@ 6 IGV/Input_WithH2A.bam -o IGV/Input_WithH2A.sort.bam
