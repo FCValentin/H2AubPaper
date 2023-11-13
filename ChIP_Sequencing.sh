@@ -94,6 +94,23 @@ done
 multiBamSummary bins -p 4 --verbose --bamfiles <ALL_BAMFILES> -o Correlation/ChipCorrelationChIP_Input.npz
 plotCorrelation --removeOutliers --corData Correlation/ChipCorrelationChIP_Input.npz -c spearman -p heatmap --colorMap bwr --plotNumbers --labels <ALL_SamplesLABEL> -o Correlation/HeatmapCorChIP_Inputspearman.svg
 
+########################
+### Histone mark QC ####
+########################
+
+# Fragmentsize only on PAIRED-END DATA
+for f in `ls -1 bwa/*_INPUT_Input.sort.bam | cut -d "/" -f 2 | sed 's/_INPUT_Input.sort.bam//'`
+	do 
+	   plotFingerprint --binSize 50 -p 4 -b bwa/${f}_H2Aub_ChIP.XL92.sort.bam bwa/${f}_H3K4me3_ChIP.XL92.sort.bam bwa/${f}_INPUT_Input.XL92.sort.bam -plot FingerPrint/${f}_fingerprint.XL92.svg 
+	   plotFingerprint --binSize 50 -p 4 -b bwa/${f}_H2Aub_ChIP.DM6.sort.bam bwa/${f}_H3K4me3_ChIP.DM6.sort.bam bwa/${f}_INPUT_Input.DM6.sort.bam -plot FingerPrint/${f}_fingerprint.DM6.svg
+	   plotFingerprint --binSize 50 -p 4 -b bwa/${f}_H2Aub_ChIP.sort.bam bwa/${f}_H3K4me3_ChIP.sort.bam bwa/${f}_INPUT_Input.sort.bam -plot FingerPrint/${f}_fingerprint.svg
+	   
+	   ### ONLY ON PAIRED-END DATA
+	   bamPEFragmentSize --maxFragmentLength 300 --binSize 1000 -p 4 -b bwa/${f}_H2Aub_ChIP.XL92.sort.bam bwa/${f}_H3K4me3_ChIP.XL92.sort.bam bwa/${f}_INPUT_Input.XL92.sort.bam -o FragmentSize/${f}_FragmentSize.XL92.svg
+	   bamPEFragmentSize --maxFragmentLength 300 --binSize 1000 -p 4 -b bwa/${f}_H2Aub_ChIP.DM6.sort.bam bwa/${f}_H3K4me3_ChIP.DM6.sort.bam bwa/${f}_INPUT_Input.DM6.sort.bam -o FragmentSize/${f}_FragmentSize.DM6.svg
+	   bamPEFragmentSize --maxFragmentLength 300 --binSize 1000 -p 4 -b bwa/${f}_H2Aub_ChIP.sort.bam bwa/${f}_H3K4me3_ChIP.sort.bam bwa/${f}_INPUT_Input.sort.bam -o FragmentSize/${f}_FragmentSize.svg
+done
+
 ###############################
 ### PCR duplicates removal ####
 ###############################
@@ -115,23 +132,6 @@ for f in `ls -1 bwa/*_INPUT_Input.sort.bam | cut -d "/" -f 2 | sed 's/_INPUT_Inp
 	   samtools index bwa/${f}_INPUT_Input.DM6.duplicates.bam
 done	   
 
-########################
-### Histone mark QC ####
-########################
-
-# Fragmentsize only on PAIRED-END DATA
-for f in `ls -1 bwa/*_INPUT_Input.sort.bam | cut -d "/" -f 2 | sed 's/_INPUT_Input.sort.bam//'`
-	do 
-	   plotFingerprint --binSize 50 -p 4 -b bwa/${f}_H2Aub_ChIP.XL92.sort.bam bwa/${f}_H3K4me3_ChIP.XL92.sort.bam bwa/${f}_INPUT_Input.XL92.sort.bam -plot FingerPrint/${f}_fingerprint.XL92.svg 
-	   plotFingerprint --binSize 50 -p 4 -b bwa/${f}_H2Aub_ChIP.DM6.sort.bam bwa/${f}_H3K4me3_ChIP.DM6.sort.bam bwa/${f}_INPUT_Input.DM6.sort.bam -plot FingerPrint/${f}_fingerprint.DM6.svg
-	   plotFingerprint --binSize 50 -p 4 -b bwa/${f}_H2Aub_ChIP.sort.bam bwa/${f}_H3K4me3_ChIP.sort.bam bwa/${f}_INPUT_Input.sort.bam -plot FingerPrint/${f}_fingerprint.svg
-	   
-	   ### ONLY ON PAIRED-END DATA
-	   bamPEFragmentSize --maxFragmentLength 300 --binSize 1000 -p 4 -b bwa/${f}_H2Aub_ChIP.XL92.sort.bam bwa/${f}_H3K4me3_ChIP.XL92.sort.bam bwa/${f}_INPUT_Input.XL92.sort.bam -o FragmentSize/${f}_FragmentSize.XL92.svg
-	   bamPEFragmentSize --maxFragmentLength 300 --binSize 1000 -p 4 -b bwa/${f}_H2Aub_ChIP.DM6.sort.bam bwa/${f}_H3K4me3_ChIP.DM6.sort.bam bwa/${f}_INPUT_Input.DM6.sort.bam -o FragmentSize/${f}_FragmentSize.DM6.svg
-	   bamPEFragmentSize --maxFragmentLength 300 --binSize 1000 -p 4 -b bwa/${f}_H2Aub_ChIP.sort.bam bwa/${f}_H3K4me3_ChIP.sort.bam bwa/${f}_INPUT_Input.sort.bam -o FragmentSize/${f}_FragmentSize.svg
-done
-
 # filter out duplicates
 for f in `ls -1 bwa/*.duplicates.bam | cut -d "/" -f 2 | sed 's/.duplicates.bam//'`
 	do samtools view -hb -F 0x400 -q 20 bwa/${f}.duplicates.bam | samtools sort -@ 6 > bwa/${f}.sort.filter.bam
@@ -141,7 +141,6 @@ done
 #############################################
 ### DATA QC after PCR duplicates removal ####
 #############################################
-
 
 for f in `ls -1 bwa/*.sort.filter.bam   | cut -d "/" -f 2 | sed 's/.bam//'`
 	do samtools flagstat bwa/${f}.bam > log/${f}.txt
