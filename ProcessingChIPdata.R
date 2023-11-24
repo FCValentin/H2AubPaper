@@ -128,6 +128,38 @@ for (i in 1:length(myfiles)) {
 }
 dev.off()
 
+############################################
+##### R Script TSS Profile P-Value #########
+############################################
+
+library(dplyr)
+setwd("C:/Users/ValentinFC/Desktop/Article/IGV")
+table <- lire("Droso_USP21Sensitive_LadderH2Aub.tsv")
+# Select Kb refion around TSS (here 1kb around TSS, 20% bins before and after TSS)
+BorneDown <- 81
+BorneUp <- 120
+# Select sample to compare
+ToCompare <- 37
+BaseLine <-42
+
+# Select and convert value into numeric
+NormalState <- as.numeric(table[BaseLine,c(BorneDown:BorneUp)])
+ComparedState <- as.numeric(table[ToCompare,c(BorneDown:BorneUp)])
+
+# Dataframe formating for test processing
+my_data <- data.frame(group = rep(c("AllGenes", "MZ"), each = length(NormalState)), values = c(NormalState, ComparedState))
+
+# Paired wilcoxon Mann-Whitney test
+wilcox.test(values ~ group, data = my_data, paired = TRUE,alternative="less")
+
+# Extract number of value, median and IQR for each sample
+group_by(my_data, group) %>%
+  summarise(
+    count = n(),
+    median = median(values, na.rm = TRUE),
+    IQR = IQR(values, na.rm = TRUE)
+  )
+
 ###############################################################
 ##### R Script PValues : Output a .probabilities file #########
 ###############################################################
