@@ -202,6 +202,7 @@ findMotifs.pl Sequences_H2Aub.fasta fasta Cluster_H2Aub -fasta MEME_sequences_Ba
 ### CHROMHMM MODEL ####
 #######################
 
+https://github.com/jernst98/ChromHMM/blob/master/ChromHMM_manual.pdf
 mkdir HMMModel
 mkdir HMMClassify
 
