@@ -197,3 +197,147 @@ sed 's/chr/>chr/g' MEME_sequences_Background_ClusterH2Aub.bed | sed 's/\t/\n/g' 
 
 # homer motif research command line
 findMotifs.pl Sequences_H2Aub.fasta fasta Cluster_H2Aub -fasta MEME_sequences_Background_ClusterH2Aub.fasta > H2AubCluster.txt
+
+#######################
+### CHROMHMM MODEL ####
+#######################
+
+mkdir HMMModel
+mkdir HMMClassify
+
+#SampleTable contains all BAM ChIP and Input samples shown in the ChromHMM model : Spermatid, Sperm, ReplicatedSperm and Stage12 H2Aub
+java -mx4000M -jar ChromHMM.jar BinarizeBam -b 150 -f 2 ~/../../../mnt/c/Documents\ and\ Settings/ValentinFC/Documents/These/Analyses/GFF/chromSizesXL9.bed BAM sampleTable.tsv HMMModel
+#Model generated for 0 at 20 clusters
+for f in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20
+	do java -mx4000M -jar ChromHMM.jar LearnModel -p 0 -init random -b 150 -r 5000 HMMModel HMMClassify_All_Sample ${f} xenLae2
+done
+
+################################
+#### CUT&RUN CHEN pipeline #####
+################################
+
+conda activate CutRun_ChenPipeline
+#SNPSplit genome extraction : Paternal = PWK_PhJ, Mat = DBA_2JxC57BL_6NJ
+SNPsplit_genome_preparation --vcf_file SNPSplit/mgp_REL2021_snps.vcf.gz --reference_genome SNPSplit --dual_hybrid --strain PWK_PhJ --strain2 DBA_2J
+SNPsplit_genome_preparation --vcf_file SNPSplit/mgp_REL2021_snps.vcf.gz --reference_genome SNPSplit --dual_hybrid --strain PWK_PhJ --strain2 C57BL_6NJ
+
+-------------------------------------
+------ MaskMerging.py script --------
+-------------------------------------
+
+-*- coding: utf-8 -*-
+"""
+Éditeur de Spyder
+
+Ceci est un script temporaire.
+"""
+
+def open_file(fichier):
+    with open(fichier, 'r') as f:
+        lines = f.readlines()
+    # No return end of line
+    return ''.join(line.strip() for line in lines[1:])
+
+def find_commom_seq(sequence1, sequence2):
+    if len(sequence1) != len(sequence2):
+        raise ValueError("Sequence length are differents.")
+
+    commom_seq = ''
+    for letter1, letter2 in zip(sequence1, sequence2):
+        # Ignore positions where both letters are N
+        if letter1 != letter2 and letter1 != 'N':
+            commom_seq += letter1
+        elif letter1 != letter2 and letter2 != 'N':
+            commom_seq += letter2
+        else:
+            commom_seq += letter1  # Les lettres sont égales ou les deux sont N
+
+    return commom_seq
+
+if __name__ == "__main__":
+    
+    
+    import os
+
+    # path to directory
+    new_directory = 'Documents/These/Analyses/Chen2021'
+
+    # change Path
+    os.chdir(new_directory)
+
+    for i in range(1, 23):
+        if i == 20:
+            value = "X"
+        elif i == 21:
+            value = "Y"
+        elif i == 22:
+            value = "MT"
+        else:
+            value = str(i)      
+        # For each chromosome, compute the script on SNP masked genome
+        file1 = 'PWK_PhJ_DBA_2J_dual_hybrid.based_on_GRCm39_N-masked/chr'+value+'.N-masked.fa'
+        file2 = 'PWK_PhJ_C57BL_6NJ_dual_hybrid.based_on_GRCm39_N-masked/chr'+value+'.N-masked.fa'
+        
+        # Read sequences
+        sequence1 = open_file(file1)
+        sequence2 = open_file(file2)
+
+        # Identify a common sequence
+        commom_seq = find_commom_seq(sequence1, sequence2)
+        filename = 'mask/chr'+valeur+'.N-masked.fa'
+
+        # Export genome ('w')
+        with open(filename, 'w') as file:
+            file.write(commom_seq)
+
+----------------------------------------------------------------
+
+for f in `ls -1 mask/*.fa | cut -d "/" -f 2 | sed 's/.fa//'`
+	do awk '{gsub(/.{100}/,"&\n")}1' mask/${f}.fa > fasta/${f}.fasta 
+done
+
+bowtie2-build --threads 4 -f mm39.fa mm39_gen
+bowtie2-build --threads 4 -f mm39-Chen_Masked.fa mm39_genChen_masked
+
+#Remove adapter/low quality reads and export fastqc report
+for f in `ls -1 fastq/*_1.fastq.gz | cut -d "/" -f 2 | sed 's/_1.fastq.gz//'`
+	do trim_galore --fastqc --quality 20 --length 20 --paired -o trimgalore fastq/${f}_1.fastq.gz fastq/${f}_2.fastq.gz
+done
+
+# bowtie 2 alignment for CUT&RUN data parameters on bibliography
+for f in `ls -1 trimgalore/*_1.fq.gz  | cut -d "/" -f 2 | sed 's/_1_val_1.fq.gz//'`
+	do bowtie2 -p 4 --no-unal --no-mixed --no-discordant -I 10 -X 700 -x ~/../../../mnt/c/Documents\ and\ Settings/ValentinFC/Documents/These/Analyses/GFF/mm39_genChen_masked -1 trimgalore/${f}_1_val_1.fq.gz -2 trimgalore/${f}_2_val_2.fq.gz | samtools view -hbS | samtools sort > bowtie/${f}.sort.bam
+done
+
+# Check fragmentsize, and compute alignement data
+for f in `ls -1 bowtie/*.sort.bam  | cut -d "/" -f 2 | sed 's/.sort.bam//'`
+	do 
+	samtools index bowtie/${f}.sort.bam
+	bamPEFragmentSize --maxFragmentLength 300 --binSize 1000 -p 4 -b bowtie/${f}.sort.bam -o FragmentSize/${f}_FragmentSize.svg
+	samtools flagstat bowtie/${f}.sort.bam > log/${f}.txt
+done
+
+#Sample correlation checkup (spearman) by heatmap
+multiBamSummary bins -bs 10000 -p 4 --verbose --bamfiles bowtie/H2AubEmb_Rep1.sort.bam bowtie/H2AubEmb_Rep2.sort.bam bowtie/H2Aub2Cells_Rep1.sort.bam bowtie/H2Aub2Cells_Rep2.sort.bam bowtie/H2AubSp_Rep1.sort.bam bowtie/H2AubSp_Rep2.sort.bam bowtie/H2AubEgg_Rep1.sort.bam bowtie/H2AubEgg_Rep2.sort.bam -o Correlation/ChipCorrelation.npz
+plotCorrelation --removeOutliers --corData Correlation/ChipCorrelation.npz -c spearman -p heatmap --colorMap bwr --plotNumbers --labels H2AubEmb1 H2AubEmb2  H2Aub2Cells1 H2Aub2Cells2 H2AubSp1 H2AubSp2 H2AubOo1 H2AubOo2 -o Correlation/HeatmapCorChIP_Inputspearman.svg
+
+# mark duplicates with Picard && index result bam
+for f in `ls -1 bowtie/*.sort.bam | cut -d "/" -f 2 | sed 's/.sort.bam//'`
+	do java -jar picard.jar MarkDuplicates I=bowtie/${f}.sort.bam O=bowtie/${f}.duplicates.bam M=bowtie/${f}.dup_metrics.txt
+	   samtools index bowtie/${f}.duplicates.bam
+done
+
+# Remove PCR duplicates, then sort and index BAM
+for f in `ls -1 bowtie/*.duplicates.bam  | cut -d "/" -f 2 | sed 's/.duplicates.bam//'`
+	do samtools view -hb -F 0x400 -q 20 bowtie/${f}.duplicates.bam > bowtie/${f}.filter.bam
+	   samtools sort -@ 6 bowtie/${f}.filter.bam -o bowtie/${f}.sort.filter.bam
+	   samtools index bowtie/${f}.sort.filter.bam
+	   samtools flagstat bowtie/${f}.sort.filter.bam > log/${f}.txt
+done
+
+# extracts reads from SNP calling : Genome 1 is maternal, Genome 2 is paternal 
+for f in `ls -1 bowtie/*.sort.filter.bam  | cut -d "/" -f 2 | sed 's/.sort.filter.bam//'`
+	do 
+	SNPsplit --paired --snp_file SNPSplit/all_SNPs_PWK_PhJ_GRCm39.txt.gz -o PWK bowtie/${f}.sort.filter.bam
+done
+
