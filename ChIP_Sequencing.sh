@@ -227,11 +227,6 @@ SNPsplit_genome_preparation --vcf_file SNPSplit/mgp_REL2021_snps.vcf.gz --refere
 -------------------------------------
 
 -*- coding: utf-8 -*-
-"""
-Éditeur de Spyder
-
-Ceci est un script temporaire.
-"""
 
 def open_file(fichier):
     with open(fichier, 'r') as f:
@@ -241,7 +236,7 @@ def open_file(fichier):
 
 def find_commom_seq(sequence1, sequence2):
     if len(sequence1) != len(sequence2):
-        raise ValueError("Sequence length are differents.")
+        raise ValueError("Sequence length are differents")
 
     commom_seq = ''
     for letter1, letter2 in zip(sequence1, sequence2):
@@ -251,7 +246,7 @@ def find_commom_seq(sequence1, sequence2):
         elif letter1 != letter2 and letter2 != 'N':
             commom_seq += letter2
         else:
-            commom_seq += letter1  # Les lettres sont égales ou les deux sont N
+            commom_seq += letter1  # Letters are identical or N
 
     return commom_seq
 
