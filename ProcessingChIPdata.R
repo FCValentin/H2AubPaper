@@ -134,8 +134,10 @@ dev.off()
 
 library(dplyr)
 setwd("C:/Users/ValentinFC/Desktop/Article/IGV")
+#Formated Output from -outFileNameData argument in plotProfile function https://deeptools.readthedocs.io/en/develop/content/tools/plotProfile.html, in tsv format (each line is a sample, each column is a bin)
+
 table <- lire("Droso_USP21Sensitive_LadderH2Aub.tsv")
-# Select Kb refion around TSS (here 1kb around TSS, 20% bins before and after TSS)
+# Select x Kb region around TSS depending binsize and how many bins you pick (here 1kb around TSS, 20% bins before and after TSS)
 BorneDown <- 81
 BorneUp <- 120
 # Select sample to compare
