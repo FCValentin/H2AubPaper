@@ -40,12 +40,12 @@ ptTSS<-permTest(A=BackgroundTSS, ntimes=10000,count.once = TRUE, randomize.funct
 summary(ptTSS)
 plot(ptTSS)
 
-# Overlap of 10000 resampling of Gene body from USP21 sensitive genes over all TSS with H2AK119ub1 sperm peaks
+# Overlap of 10000 resampling of Gene body from USP21 sensitive genes over all Genes body with H2AK119ub1 sperm peaks
 ptGenes<-permTest(A=BackgroundGenes, ntimes=10000,count.once = TRUE, randomize.function=resampleRegions,evaluate.function=numOverlaps, B=PeakSet,allow.overlaps = TRUE, verbose=T,universe = UniverseGenes)
 summary(ptGenes)
 plot(ptGenes)
 
-# Overlap of 10000 resampling of Enhancers associated with USP21 sensitive genes over all TSS with H2AK119ub1 sperm peaks
+# Overlap of 10000 resampling of Enhancers associated with USP21 sensitive genes over all enhancers with H2AK119ub1 sperm peaks
 ptEnhancers<-permTest(A=BackgroundEnhancers, ntimes=10000,count.once = TRUE, randomize.function=resampleRegions,evaluate.function=numOverlaps, B=PeakSet,allow.overlaps = TRUE, verbose=T,universe = UniverseEnhancers)
 summary(ptEnhancers)
 plot(ptEnhancers)
