@@ -1,4 +1,7 @@
-#####LOADING DATA#####
+##--------------------##
+##### LOADING DATA #####
+##--------------------##
+
 #Importing home made functions
 source("https://gitlab.univ-nantes.fr/E114424Z/veneR/raw/master/loadFun.R?inline=false")
 library(GenomicFeatures)
@@ -9,9 +12,9 @@ library(Repitools)
 library(regioneR)
 setwd("C:/Users/ValentinFC/Desktop/Article/IGV")
 
-########################
-### DATA IMPORTATION ###
-########################
+##----------------------##
+#### DATA IMPORTATION ####
+##----------------------##
 
 ### Import all TSS, Enhancer and GeneBody coordinates ###
 UniverseTSS<-toGRanges("Genes9_2TSS5Kb_chrosomose.bed")
@@ -26,9 +29,9 @@ BackgroundEnhancers<-toGRanges("USP21Enhancers.bed")
 ### Set of peaks to test ###
 PeakSet<-toGRanges("H2AK119ub1SpermPeaks.bed")
 
-########################
-### PERMUTATION TEST ###
-########################
+##----------------------##
+#### PERMUTATION TEST ####
+##----------------------##
 
 pdf(file = "EnrichmentUSP21ReplicatedU21.pdf",width=10,height=10)
 
@@ -49,9 +52,9 @@ plot(ptEnhancers)
 
 dev.off()
 
-##########################
-### RANDOMISATION TEST ###
-##########################
+##------------------------##
+#### RANDOMISATION TEST ####
+##------------------------##
 
 gen<-toGRanges("~/These/Analyses/GFF/XL9_Chromosomes.bed")
 pdf(file = "EnrichmentTestFig_CpG_repeats_CO.pdf",width=10,height=10)
@@ -77,9 +80,9 @@ plot(FigIntergenic)
 
 dev.off()
 
-############################
-### TF MOTIF DOT HEATMAP ###
-############################
+##--------------------------##
+#### TF MOTIF DOT HEATMAP ####
+##--------------------------##
 
 source("https://gitlab.univ-nantes.fr/E114424Z/veneR/raw/master/loadFun.R?inline=false")
 
@@ -102,9 +105,9 @@ ggplot(gene_cluster, aes(x=Cluster, y = MOTIF_NAME, size = log10(1-MinlogP.Value
 
 dev.off()
 
-#######################
-### PEAK ANNOTATION ###
-#######################
+##---------------------##
+#### PEAK ANNOTATION ####
+##---------------------##
 
 library(ChIPseeker)
 library(clusterProfiler)
@@ -128,9 +131,9 @@ for (i in 1:length(myfiles)) {
 }
 dev.off()
 
-############################################
-##### R Script TSS Profile P-Value #########
-############################################
+##------------------------------------##
+##### R Script TSS Profile P-Value #####
+##------------------------------------##
 
 library(dplyr)
 setwd("C:/Users/ValentinFC/Desktop/Article/IGV")
@@ -162,9 +165,9 @@ group_by(my_data, group) %>%
     IQR = IQR(values, na.rm = TRUE)
   )
 
-###############################################################
-##### R Script PValues : Output a .probabilities file #########
-###############################################################
+##-------------------------------------------------------##
+##### R Script PValues : Output a .probabilities file #####
+##-------------------------------------------------------##
 
 ## PART1 : PValue calculating
 
@@ -207,11 +210,9 @@ pval = cbind(test150, test110_70)
 write.table(cbind(FragmentLen,(FragmentLen$V4/FragmentLen$V7),((FragmentLen$V5+FragmentLen$V6)/FragmentLen$V7),pval,1),file=paste0(FragmentLenFile,"_Nucl_vs_SemiNucl.probabilities",sep=""),sep = '\t',quote = F,col.names = F,row.names = F)
 
 
-#############################################################
-
-##################################
-##### R Script HMM Model #########
-##################################
+##--------------------------##
+##### R Script HMM Model #####
+##--------------------------##
 
 ##PART2 : HMM##
 library("RHmm")
