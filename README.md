@@ -2,7 +2,7 @@
 
 __Valentin Francois--Campion, Florian Berger, Mami Oikawa, Maissa Goumeidane, Romain Guibeaux, and Jérôme Jullien__
 
-H3K4me3, H3K27me3 and H2AK119ub1 have been analyzed during this protocol with ChIP-Sequencing. Transcriptomic of Xenopus laevis embryo development was analysed by RNA-Sequencing
+H3K4me3, H3K27me3 and H2AK119ub1 have been analyzed during this protocol with ChIP-Sequencing. Transcriptome of Xenopus laevis embryo development was analysed by RNA-Sequencing
 
 ## Getting Started
 
@@ -24,7 +24,7 @@ Genome version and annotation :
 
 * RNA-Seq alignment [snakemake](https://gitlab.univ-nantes.fr/E114424Z/rnaseq_align)
 * RNA-Seq R scripts for [gene expression analysis](https://gitlab.univ-nantes.fr/E114424Z/BulkRNAseq)
-* All R scripts for permutation, TF motif heatmap, P-Value of particles enrichment and genomic caracterisation => [ProcessingChIPdata.R](https://github.com/FCValentin/H2AubPaper/blob/main/ProcessingChIPdata.R) 
+* All R scripts for permutations, TF motif heatmap, P-Value of particles enrichment and genomic caracterisation => [ProcessingChIPdata.R](https://github.com/FCValentin/H2AubPaper/blob/main/ProcessingChIPdata.R) 
 * All ChIP-Seq command line for data processing => [ChIP_Sequencing.sh](https://github.com/FCValentin/H2AubPaper/blob/main/ChIP_Sequencing.sh)
 * Scripts for H2A (particles) enrichment detection => [H2A_enrichment.sh](https://github.com/FCValentin/H2AubPaper/blob/main/H2A_enrichment.sh)
 
